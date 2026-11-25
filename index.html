@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+<title>The scoping calculator</title>
+<link rel="icon" href="assets/dxr-cyber-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400..700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:#fff;color:#2b303a;font:400 16px/1.5 "Instrument Sans",system-ui,sans-serif;display:flex;align-items:center;justify-content:center;padding:24px;position:relative;overflow:hidden}
+body:before,body:after{content:"";position:fixed;transform:skewX(-28deg);pointer-events:none}
+body:before{width:190px;height:360px;right:12%;top:-80px;background:#a6ff33}
+body:after{width:46px;height:240px;right:5%;bottom:-40px;background:#00ffff}
+.card{width:100%;max-width:420px;position:relative;z-index:1;background:#fff;border-radius:26px;padding:34px;box-shadow:0 18px 50px rgba(29,29,27,.12),inset 0 0 0 1.5px rgba(43,48,58,.1)}
+.rule{display:none}
+h1{margin:0 0 8px;font-size:30px;font-weight:700;color:#1d1d1b;letter-spacing:-.02em}
+p.sub{margin:0 0 24px;color:#5d626c;font-size:15px}
+label{display:block;margin:0 0 7px;font-size:13px;font-weight:600;color:#5d626c}
+input{width:100%;padding:12px 18px;font:inherit;color:#2b303a;background:#fff;border:1.5px solid rgba(43,48,58,.22);border-radius:1440px}
+input:focus{outline:none;border-color:#2b303a;box-shadow:0 0 0 4px rgba(166,255,51,.45)}
+button{width:100%;margin-top:12px;padding:12px;font:inherit;font-weight:600;letter-spacing:.5px;font-size:15px;color:#2b303a;background:#a6ff33;border:0;border-radius:1440px;cursor:pointer;transition:all .25s}
+button:hover:not(:disabled){background:#1d1d1b;color:#a6ff33}
+button:disabled{opacity:.6;cursor:default}
+.msg{min-height:19px;margin-top:12px;font-size:14px;color:#c03a3a}
+.foot{margin-top:26px;padding-top:16px;border-top:1px solid rgba(43,48,58,.12);color:#8a8e96;font-size:12.5px;line-height:1.6}
+</style>
+</head>
+<body>
+<main class="card">
+  <img src="assets/dxr-cyber-logo.png" alt="DXR Cyber" style="width:150px;height:auto;margin:0 0 26px;display:block"><div class="rule"></div>
+  <h1>The scoping calculator</h1>
+  <p class="sub">DXR Cyber Pre-Sales. Contains the live effort model. Enter the access password to continue.</p>
+  <form id="f" autocomplete="off">
+    <label for="pw">Password</label>
+    <input id="pw" type="password" autocomplete="current-password" autofocus>
+    <button id="go" type="submit">Unlock</button>
+  </form>
+  <div class="msg" id="msg" role="status" aria-live="polite"></div>
+  <div class="foot">SaaScend &middot; DXR Cyber Salesforce enablement. Do not forward this link or the password.</div>
+</main>
+<script>
+(function () {
+  var SALT = "Aba9b7T9m8WiDOIXKFYmZQ==";
+  var IV   = "gp6XFDlYXcJd3Chw";
+  var ITER = 600000;
+  var DATA = "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";
+
+  var f = document.getElementById("f"), pw = document.getElementById("pw"),
+      go = document.getElementById("go"), msg = document.getElementById("msg");
+
+  function b64(s) {
+    var bin = atob(s), out = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+    return out;
+  }
+
+  if (!(window.crypto && crypto.subtle && window.DecompressionStream)) {
+    msg.textContent = "This browser is too old to open the page. Please use an up-to-date Chrome, Edge, Safari or Firefox.";
+    go.disabled = true; pw.disabled = true; return;
+  }
+
+  async function unlock(password) {
+    var base = await crypto.subtle.importKey("raw", new TextEncoder().encode(password),
+      "PBKDF2", false, ["deriveKey"]);
+    var key = await crypto.subtle.deriveKey(
+      { name: "PBKDF2", salt: b64(SALT), iterations: ITER, hash: "SHA-256" },
+      base, { name: "AES-GCM", length: 256 }, false, ["decrypt"]);
+    var gz = await crypto.subtle.decrypt({ name: "AES-GCM", iv: b64(IV) }, key, b64(DATA));
+    var stream = new Blob([gz]).stream().pipeThrough(new DecompressionStream("gzip"));
+    return await new Response(stream).text();
+  }
+
+  function show(html) {
+    document.open();
+    document.write(html);
+    document.close();
+  }
+
+  async function attempt(password, fromSession) {
+    go.disabled = true; pw.disabled = true;
+    msg.style.color = "#5d626c";
+    msg.textContent = "Unlocking\u2026";
+    try {
+      var html = await unlock(password);
+      try { sessionStorage.setItem("scopingcalc", password); } catch (_) {}
+      show(html);
+    } catch (_) {
+      if (fromSession) { try { sessionStorage.removeItem("scopingcalc"); } catch (_) {} }
+      msg.style.color = "#c03a3a";
+      msg.textContent = "That password did not work. Check it and try again.";
+      go.disabled = false; pw.disabled = false; pw.value = ""; pw.focus();
+    }
+  }
+
+  function submit(e) {
+    if (e) e.preventDefault();
+    if (pw.value && !go.disabled) attempt(pw.value, false);
+  }
+  f.addEventListener("submit", submit);
+  go.addEventListener("click", submit);
+  pw.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" || e.keyCode === 13) submit(e);
+  });
+
+  var saved = null;
+  try { saved = sessionStorage.getItem("scopingcalc"); } catch (_) {}
+  if (saved) attempt(saved, true);
+})();
+</script>
+</body>
+</html>

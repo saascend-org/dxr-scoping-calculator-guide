@@ -1,0 +1,6 @@
+# The guide is DXR's effort model - the basis of their pricing. Never commit it in the clear.
+# index.html in this repo is the ENCRYPTED gate; the readable page exists only inside it.
+GUIDE.md
+build/index.plain.html
+*.bak
+.DS_Store
